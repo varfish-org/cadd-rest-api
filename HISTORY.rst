@@ -2,8 +2,8 @@
 CHANGELOG
 =========
 
------------------
-HEAD (unreleased)
------------------
+------
+v0.1.0
+------
 
 - Everything is new.
