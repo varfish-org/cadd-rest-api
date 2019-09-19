@@ -17,3 +17,7 @@ migrate: _migrate black
 
 celery:
 	celery worker -A config.celery_app -l info --concurrency=4
+
+test:
+	$(MANAGE) test --settings=config.settings.test -v2
+

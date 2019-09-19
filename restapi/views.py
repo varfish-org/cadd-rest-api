@@ -1,10 +1,11 @@
 import re
 
 from django.core.exceptions import ObjectDoesNotExist
+from django.db import IntegrityError
 from django.http import JsonResponse
 from rest_framework.views import APIView
 
-from restapi.models import AnnotateBackgroundJobStatus
+from restapi.models import AnnotateBackgroundJob
 from restapi.tasks import annotate_background_job
 
 
@@ -16,7 +17,10 @@ RE_VAR = (
 
 
 class AnnotateApiView(APIView):
+    """API view for annotating variants."""
+
     def post(self, *args, **kwargs):
+        """Returns either a 500 status if object couldn't be created, or the uuid if object was created successfully."""
         genomebuild = self.request.data.get("genome_build")
         data = {
             "genome_build": genomebuild,
@@ -27,27 +31,47 @@ class AnnotateApiView(APIView):
                 if re.search(RE_VAR, var)
             ],
         }
-        bgjob = AnnotateBackgroundJobStatus.objects.create(
-            status="active", args=data, info={"cadd_rest_api_version": 0.1}
-        )
-        annotate_background_job.delay(bgjob.id)
-        return JsonResponse({"result": "OK", "bgjob_id": bgjob.id})
+        try:
+            bgjob = AnnotateBackgroundJob.objects.create(
+                status="active", args=data, info={"cadd_rest_api_version": 0.1}, scores={}
+            )
+        except IntegrityError:
+            return JsonResponse(
+                {"result", "Can't create annotate background job object."}, status=500
+            )
+        annotate_background_job.delay(bgjob.uuid)
+        return JsonResponse({"uuid": bgjob.uuid})
 
 
 class ResultApiView(APIView):
+    """API view for fetching & deleting annotation results."""
+
     def post(self, *args, **kwargs):
+        """Returns either a 500 status if job object wasn't found, or a listing of the status of the job.
+        Deletes entry if status is finished or failed, after retrieving the results.
+        """
         try:
-            bgjob = AnnotateBackgroundJobStatus.objects.get(id=self.request.data.get("bgjob_id"))
-        except ObjectDoesNotExist as e:
-            return JsonResponse({"result": "Background job does not exist."}, status=500)
+            bgjob = AnnotateBackgroundJob.objects.get(uuid=self.request.data.get("bgjob_uuid"))
+        except ObjectDoesNotExist:
+            # Return error if retrieving background job object failed.
+            return JsonResponse(
+                {
+                    "result": "Background job with uuid {} does not exist.".format(
+                        self.request.data.get("bgjob_uuid")
+                    )
+                },
+                status=500,
+            )
+        # Prepare return data
         response = {
-            "result": "OK",
-            "status": bgjob.status,
-            "scores": bgjob.scores,
-            "args": bgjob.args,
-            "info": bgjob.info,
+            "result": bgjob.message,  # Any further information about the job state
+            "status": bgjob.status,  # `finished`, `failed`, `active`
+            "scores": bgjob.scores,  # only filled when `finished` state is reached, otherwise empty
+            "args": bgjob.args,  # arguments passed to annotate view
+            "info": bgjob.info,  # information dictionary
         }
-        if bgjob.status == "finished":
+        # Delete object only if job is in `finished` or `failed` state & data will be delivered.
+        if bgjob.status in ("finished", "failed"):
             bgjob.delete()
         return JsonResponse(response)
 

@@ -42,7 +42,12 @@ LOCALE_PATHS = [ROOT_DIR.path("locale")]
 # ------------------------------------------------------------------------------
 # https://docs.djangoproject.com/en/dev/ref/settings/#databases
 
-DATABASES = {"default": {"ENGINE": "django.db.backends.sqlite3", "NAME": "cadd_rest_api_db"}}
+DATABASES = {
+    "default": {
+        "ENGINE": "django.db.backends.sqlite3",
+        "NAME": env.str("DATABASE_URL", "cadd_rest_api.db"),
+    }
+}
 
 # URLS
 # ------------------------------------------------------------------------------
@@ -249,6 +254,8 @@ CELERY_TASK_TIME_LIMIT = 5 * 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
 CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_LOG_FILE = env.str("CELERY_LOG_FILE", "/var/log/celery.log")
+CELERY_LOG_LEVEL = env.str("CELERY_LOG_LEVEL", "INFO")
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler
 CELERY_BEAT_SCHEDULER = "django_celery_beat.schedulers:DatabaseScheduler"
 # django-allauth
@@ -285,6 +292,3 @@ CADD_SH = env.str("CADD_SH", "CADD.sh")
 
 #: Path to conda installation.
 CADD_CONDA = env.str("CADD_CONDA", "")
-
-#: Path to conda environment to activate for CADD if any.
-CADD_ENV = env.str("CADD_ENV", "cadd-env")
