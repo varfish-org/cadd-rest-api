@@ -1,3 +1,0 @@
-global-exclude *.pyc *.pyo
-include versioneer.py
-include cadd_rest/_version.py

@@ -1,8 +1,0 @@
-versioneer ==0.18
-flask ==1.0.2
-flask-restplus ==0.12.1
-
-gunicorn ==19.9.0
-
-black ==19.3b0
-flake8 ==3.7.7
