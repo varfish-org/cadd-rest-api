@@ -1,3 +1,6 @@
+# SQLite database.
+/*.db
+
 ## Text Editors
 .*.sw?
 *~
