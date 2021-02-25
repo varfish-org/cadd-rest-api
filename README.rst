@@ -26,3 +26,14 @@ Quick Info
 - Dependencies:
     - `CADD-scripts <https://github.com/kircherlab/CADD-scripts>`__
     - Celery for Queuing
+
+---------------------
+Building Docker Image
+---------------------
+
+Use the ``docker/build-docker`` if you are at a given tag.
+Or:
+
+.. code-block:: bash
+
+    $ docker build . --build-arg app_git_tag=v0.2.2 -t bihealth/rest-api-server:0.2.2-0
