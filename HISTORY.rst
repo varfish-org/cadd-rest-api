@@ -2,9 +2,9 @@
 History / Changelog
 ===================
 
------------------
-HEAD (unreleased)
------------------
+------
+v0.2.2
+------
 
 - Adressing issues found by Codacy
 - Adding Github Actions CI
