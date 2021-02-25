@@ -1,0 +1,47 @@
+name: CI
+
+on: [push]
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version:
+          - 3.6
+          - 3.7
+          - 3.8
+          - 3.9
+
+    steps:
+      - name: Install Python via conda.
+        uses: s-weigand/setup-conda@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+          conda-channels: defaults,bioconda,conda-forge
+      - name: Install mamba.
+        run: conda install -y mamba
+      - name: Install the cadd-scripts package from bioconda
+        run: mamba install -y cadd-scripts
+
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Install project Python dependencies
+        run: |
+          pip install -r requirements/local.txt
+          pip install -r requirements/test.txt
+      - name: Run collectstatic
+        run: python manage.py collectstatic --noinput
+      - name: Run tests
+        run: |
+          coverage run --rcfile=.coveragerc manage.py test -v 2 --settings=config.settings.test
+          coverage xml
+      - name: Check formatting
+        run: make black arg=--check
+      - name: Run Codacy coverage reporter
+        uses: codacy/codacy-coverage-reporter-action@master
+        with:
+          project-token: ${{ secrets.CODACY_PROJECT_TOKEN }}
+          coverage-reports: coverage.xml
+        if: ${{ matrix.python-version == '3.7' }}

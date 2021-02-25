@@ -3,8 +3,11 @@ python-slugify==3.0.3  # https://github.com/un33k/python-slugify
 Pillow==6.1.0  # https://github.com/python-pillow/Pillow
 argon2-cffi==19.1.0  # https://github.com/hynek/argon2_cffi
 redis==3.3.8  # https://github.com/antirez/redis
-celery==4.3.0  # pyup: < 5.0  # https://github.com/celery/celery
+celery==4.3.1  # pyup: < 5.0  # https://github.com/celery/celery
 django-celery-beat==1.5.0  # https://github.com/celery/django-celery-beat
+
+Werkzeug==0.14.1  # pyup: < 0.15 # https://github.com/pallets/werkzeug
+Sphinx==2.2.0  # https://github.com/sphinx-doc/sphinx
 
 # Django
 # ------------------------------------------------------------------------------
@@ -14,10 +17,10 @@ django-model-utils==3.2.0  # https://github.com/jazzband/django-model-utils
 django-allauth==0.40.0  # https://github.com/pennersr/django-allauth
 django-crispy-forms==1.7.2  # https://github.com/django-crispy-forms/django-crispy-forms
 django-redis==4.10.0  # https://github.com/niwinz/django-redis
+django-debug-toolbar==2.0  # https://github.com/jazzband/django-debug-toolbar
 
 # Django REST Framework
 djangorestframework==3.10.3  # https://github.com/encode/django-rest-framework
 coreapi==2.3.3  # https://github.com/core-api/python-client
 
-jsonfield
-uuid
+jsonfield==2.1.1
