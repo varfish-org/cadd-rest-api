@@ -1,7 +1,7 @@
 import csv
 import gzip
 import os
-import subprocess
+import subprocess  # nosec
 import tempfile
 
 from restapi.models import AnnotateBackgroundJob
@@ -36,7 +36,9 @@ def annotate_background_job(_self, bgjob_uuid):
                 ),
             ]
             # Submit the bash job
-            proc = subprocess.Popen(cmdline, stderr=subprocess.PIPE, stdout=subprocess.PIPE)
+            proc = subprocess.Popen(
+                cmdline, stderr=subprocess.PIPE, stdout=subprocess.PIPE
+            )  # nosec
             # Wait for the job or raise exception on timeout
             try:
                 return_code = proc.wait(timeout=CADD_TIMEOUT)
@@ -49,7 +51,7 @@ def annotate_background_job(_self, bgjob_uuid):
                 bgjob.save()
                 raise
             # Check bash return code for validity, and raise exception if it is invalid.
-            if not return_code == 0:
+            if return_code != 0:
                 # Write job status to database before raising.
                 bgjob.status = "failed"
                 bgjob.message = "Command line '{}' exited with error code {} and message: {}".format(
@@ -68,7 +70,7 @@ def annotate_background_job(_self, bgjob_uuid):
                 for row in reader:
                     if not header and row and not row[0].startswith("#Chrom"):
                         continue
-                    elif not header and row and row[0].startswith("#"):
+                    if not header and row and row[0].startswith("#"):
                         header = row
                     elif header:
                         data = dict(zip(header, row))

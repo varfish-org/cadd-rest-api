@@ -1,5 +1,4 @@
-"""
-WSGI config for CADD REST API project.
+"""WSGI config for CADD REST API project.
 
 This module contains the WSGI application used by Django's development server
 and any production WSGI deployments. It should expose a module-level variable
