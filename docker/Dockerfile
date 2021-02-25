@@ -21,16 +21,17 @@ RUN apt-get install -y \
 # Install miniconda3
 RUN cd /tmp && \
     wget https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh && \
-    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda3 &&
+    bash Miniconda3-latest-Linux-x86_64.sh -b -p /opt/miniconda3 && \
     rm Miniconda3-latest-Linux-x86_64.sh
 ENV PATH="/opt/miniconda3/bin:${PATH}"
-RUN conda install -y mamba && \
-    mamba install -y python=3.6
+RUN conda install -c conda-forge -y mamba
+
+# Install packages with mamba
+RUN mamba install -c conda-forge -c bioconda -y python=3.6 cadd-scripts
 
 # Install Python dependencies.
 RUN cd /usr/src/app && \
-    pip install --no-cache-dir -r requirements/production.txt && \
-    pip install --no-cache-dir -r requirements/local.txt
+    pip install --no-cache-dir -r requirements/production.txt
 
 # Prepare static files
 RUN cd /usr/src/app && \

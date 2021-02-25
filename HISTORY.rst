@@ -2,6 +2,12 @@
 History / Changelog
 ===================
 
+-----------------
+HEAD (unreleased)
+-----------------
+
+- Adding scripts for building Docker images
+
 ------
 v0.2.2
 ------
