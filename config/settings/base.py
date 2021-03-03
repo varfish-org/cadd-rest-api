@@ -56,7 +56,7 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 # APPS
 # ------------------------------------------------------------------------------
-DJANGO_APPS = []
+DJANGO_APPS = ["django.contrib.auth", "django.contrib.contenttypes"]
 THIRD_PARTY_APPS = ["rest_framework"]
 
 LOCAL_APPS = [
