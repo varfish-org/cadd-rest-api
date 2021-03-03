@@ -6,6 +6,7 @@ import tempfile
 
 from restapi.models import AnnotateBackgroundJob
 from config.celery import app
+from celery.exceptions import SoftTimeLimitExceeded
 from config.settings.base import CADD_CONDA, CADD_SH, CADD_TIMEOUT
 
 
@@ -82,7 +83,7 @@ def annotate_background_job(_self, bgjob_uuid):
                 bgjob.status = "finished"
                 bgjob.message = "OK"
                 bgjob.save()
-    except IOError as e:
+    except (IOError, SoftTimeLimitExceeded) as e:
         # Return failed state if couldn't open file.
         bgjob.status = "failed"
         bgjob.message = e

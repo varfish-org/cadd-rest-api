@@ -205,7 +205,7 @@ CELERY_RESULT_SERIALIZER = "json"
 CELERY_TASK_TIME_LIMIT = 5 * 60
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#task-soft-time-limit
 # TODO: set to whatever value is adequate in your circumstances
-CELERY_TASK_SOFT_TIME_LIMIT = 60
+CELERY_TASK_SOFT_TIME_LIMIT = 5 * 60
 CELERY_LOG_FILE = env.str("CELERY_LOG_FILE", "/var/log/celery.log")
 CELERY_LOG_LEVEL = env.str("CELERY_LOG_LEVEL", "INFO")
 # http://docs.celeryproject.org/en/latest/userguide/configuration.html#beat-scheduler

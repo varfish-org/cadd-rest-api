@@ -7,6 +7,8 @@ HEAD (unreleased)
 -----------------
 
 - Adding scripts for building Docker images
+- Catch timeout exception for celery worker jobs
+- Remove unused code (auth, user)
 
 ------
 v0.2.2
