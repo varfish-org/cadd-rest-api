@@ -2,9 +2,9 @@
 History / Changelog
 ===================
 
------------------
-HEAD (unreleased)
------------------
+------
+v0.3.0
+------
 
 - Adding scripts for building Docker images
 - Catch timeout exception for celery worker jobs
