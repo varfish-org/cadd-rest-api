@@ -11,4 +11,4 @@ DOCKER_VERSION=$(echo $GIT_TAG | sed -e 's/^v//')-$BUILD_NO
 
 docker build . \
     --build-arg app_git_tag=$GIT_TAG \
-    -t bihealth/rest-api-server:$DOCKER_VERSION
+    -t bihealth/cadd-rest-api:$DOCKER_VERSION

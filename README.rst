@@ -36,4 +36,4 @@ Or:
 
 .. code-block:: bash
 
-    $ docker build . --build-arg app_git_tag=v0.2.2 -t bihealth/rest-api-server:0.2.2-0
+    $ docker build . --build-arg app_git_tag=v0.3.1 -t bihealth/cadd-rest-api:0.3.1-0

@@ -3,6 +3,12 @@ History / Changelog
 ===================
 
 ------
+v0.3.1
+------
+
+- Fixing name in docker build.
+
+------
 v0.3.0
 ------
 
