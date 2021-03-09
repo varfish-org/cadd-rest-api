@@ -21,6 +21,7 @@ def annotate_background_job(_self, bgjob_uuid):
             with open(os.path.join(tmpdir, "in.vcf"), "wt") as vcff:
                 for variant in args["variants"]:
                     print("%s\t%s\t.\t%s\t%s" % tuple(variant.split("-")), file=vcff)
+            vcff.flush()
             # Build command line to CADD.sh and execute.
             cmdline = [
                 "bash",

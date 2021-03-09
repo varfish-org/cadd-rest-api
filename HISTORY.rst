@@ -3,6 +3,18 @@ History / Changelog
 ===================
 
 ------
+v0.3.3
+------
+
+- Fixing problem with flushing temporary file.
+
+------
+v0.3.2
+------
+
+- Fixing problem in docker build.
+
+------
 v0.3.1
 ------
 
