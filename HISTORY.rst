@@ -3,6 +3,14 @@ History / Changelog
 ===================
 
 ------
+v0.3.4
+------
+
+- Removing problematic fix.
+- Short-circuit if no variants given.
+- Setting default celery parallelism to 1.
+
+------
 v0.3.3
 ------
 

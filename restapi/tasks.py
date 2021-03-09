@@ -15,13 +15,20 @@ def annotate_background_job(_self, bgjob_uuid):
     """Task to execute a CADD scoring background job."""
     bgjob = AnnotateBackgroundJob.objects.get(uuid=bgjob_uuid)
     args = bgjob.args
+
+    if not args["variants"]:  # no scores, nothing to do
+        bgjob.scores = {}
+        bgjob.status = "finished"
+        bgjob.message = "OK"
+        bgjob.save()
+        return
+
     try:
         with tempfile.TemporaryDirectory(prefix="cadd_rest") as tmpdir:
             # Write out the input file for CADD.sh
             with open(os.path.join(tmpdir, "in.vcf"), "wt") as vcff:
                 for variant in args["variants"]:
                     print("%s\t%s\t.\t%s\t%s" % tuple(variant.split("-")), file=vcff)
-            vcff.flush()
             # Build command line to CADD.sh and execute.
             cmdline = [
                 "bash",
