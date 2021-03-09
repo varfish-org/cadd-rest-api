@@ -33,12 +33,6 @@ RUN mamba install -c conda-forge -c bioconda -y python=3.6 cadd-scripts
 RUN cd /usr/src/app && \
     pip install --no-cache-dir -r requirements/production.txt
 
-# Prepare static files
-RUN cd /usr/src/app && \
-    DJANGO_SECRET_KEY=for-build-only \
-    DJANGO_SETTINGS_MODULE=config.settings.production \
-    python manage.py collectstatic --no-input
-
 # Define the entry point.
 COPY docker-entrypoint.sh /usr/local/bin
 RUN chmod +x /usr/local/bin/docker-entrypoint.sh && \

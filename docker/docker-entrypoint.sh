@@ -6,14 +6,13 @@ set -euo pipefail
 #
 #   wsgi            -- run gunicorn with Django WSGI
 #   celeryd         -- run celery worker
-#   celerybeat      -- run celerybeat daemon
 #
 # Environment Variables:
 #
 #   APP_DIR         -- path to application directory
 #                      default: "/usr/src/app"
 #   CELERY_QUEUES   -- argument for Celery queues
-#                      default: "default,query,import" (all)
+#                      default: "celery" (all)
 #   CELERY_WORKERS  -- celery concurrency/process count
 #                      default: "8"
 #
@@ -32,10 +31,10 @@ set -euo pipefail
 
 
 APP_DIR=${APP_DIR-/usr/src/app}
-CELERY_QUEUES=${CELERY_QUEUES-default,query,import}
+CELERY_QUEUES=${CELERY_QUEUES-celery}
 CELERY_WORKERS=${CELERY_WORKERS-8}
 NO_WAIT=${NO_WAIT-0}
-export WAIT_HOSTS=${WAIT_HOSTS-postgres:5432, redis:6379}
+export WAIT_HOSTS=${WAIT_HOSTS-:redis:6379}
 export PYTHONUNBUFFERED=${PYTHONUNBUFFERED-1}
 HTTP_HOST=${HTTP_HOST-0.0.0.0}
 HTTP_PORT=${HTTP_PORT-8080}
@@ -55,14 +54,6 @@ elif [[ "$1" == celeryd ]]; then
     --app config.celery_app \
     -Q "${CELERY_QUEUES}" \
     --concurrency "${CELERY_WORKERS}" \
-    --loglevel info
-elif [[ "$1" == celerybeat ]]; then
-  cd $APP_DIR
-  rm -f celerybeat.pid
-
-  exec celery beat \
-    --max-interval 30 \
-    --app config.celery_app \
     --loglevel info
 else
   cd $APP_DIR
