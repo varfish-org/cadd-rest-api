@@ -8,11 +8,10 @@ from rest_framework.views import APIView
 from restapi.models import AnnotateBackgroundJob
 from restapi.tasks import annotate_background_job
 
-
 #: Regular expression to parse variants with.
 RE_VAR = (
     r"^(?P<contig>[a-zA-Z0-9\._])+-(?P<pos>\d+)-"
-    "(?P<reference>[ACGTN]+)-(?P<alternative>[ACGTN]+)$"
+    r"(?P<reference>[ACGTN]+)-(?P<alternative>[ACGTN]+)$"
 )
 
 
@@ -25,11 +24,7 @@ class AnnotateApiView(APIView):
         data = {
             "genome_build": genomebuild,
             "cadd_release": self.request.data.get("cadd_release"),
-            "variants": [
-                _normalize_vars(var, genomebuild)
-                for var in self.request.data.get("variant")
-                if re.search(RE_VAR, var)
-            ],
+            "variants": [var for var in self.request.data.get("variant") if re.search(RE_VAR, var)],
         }
         try:
             bgjob = AnnotateBackgroundJob.objects.create(
@@ -74,10 +69,3 @@ class ResultApiView(APIView):
         if bgjob.status in ("finished", "failed"):
             bgjob.delete()
         return JsonResponse(response)
-
-
-def _normalize_vars(var, genomebuild):
-    """Normalize variants regarding the ``"chr"`` prefix."""
-    if genomebuild == "GRCh37":
-        return var[3:] if var.startswith("chr") else var
-    return var if var.startswith("chr") else ("chr" + var)

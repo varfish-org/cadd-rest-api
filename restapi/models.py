@@ -1,6 +1,7 @@
+import uuid
+
 from django.db import models
 import jsonfield
-import uuid
 
 STATUS_ACTIVE = "active"
 STATUS_FAILED = "failed"

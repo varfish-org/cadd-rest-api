@@ -50,8 +50,9 @@ if [[ "$1" == wsgi ]]; then
 elif [[ "$1" == celeryd ]]; then
   cd $APP_DIR
 
-  exec celery worker \
+  exec celery \
     --app config.celery_app \
+    worker \
     -Q "${CELERY_QUEUES}" \
     --concurrency "${CELERY_WORKERS}" \
     --loglevel info
