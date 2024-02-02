@@ -3,7 +3,7 @@
 
 import os.path
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 import versioneer
 
@@ -34,7 +34,7 @@ install_requirements = parse_requirements("requirements/base.txt")
 
 setup(
     author="Manuel Holtgrewe, Oliver Stolpe",
-    author_email=("manuel.holtgrewe@bihealth.de, oliver.stolpe@bihealth.de"),
+    author_email=("manuel.holtgrewe@bih-charite.de, oliver.stolpe@bih-charite.de"),
     classifiers=[
         "Development Status :: 4 - Beta",
         "Intended Audience :: Developers",
@@ -55,7 +55,7 @@ setup(
     keywords="cadd varfish",
     name="cadd-rest-api",
     packages=find_packages(),
-    url="https://github.com/bihealth/cadd-rest-api",
+    url="https://github.com/varfish-org/cadd-rest-api",
     version=versioneer.get_version(),
     cmdclass=versioneer.get_cmdclass(),
     zip_safe=False,

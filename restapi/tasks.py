@@ -4,10 +4,11 @@ import os
 import subprocess  # nosec
 import tempfile
 
-from restapi.models import AnnotateBackgroundJob
-from config.celery import app
 from celery.exceptions import SoftTimeLimitExceeded
+
+from config.celery import app
 from config.settings.base import CADD_CONDA, CADD_SH, CADD_TIMEOUT
+from restapi.models import AnnotateBackgroundJob
 
 
 @app.task(bind=True)
@@ -15,6 +16,7 @@ def annotate_background_job(_self, bgjob_uuid):
     """Task to execute a CADD scoring background job."""
     bgjob = AnnotateBackgroundJob.objects.get(uuid=bgjob_uuid)
     args = bgjob.args
+    chrom_stripped = False
 
     if not args["variants"]:  # no scores, nothing to do
         bgjob.scores = {}
@@ -28,6 +30,9 @@ def annotate_background_job(_self, bgjob_uuid):
             # Write out the input file for CADD.sh
             with open(os.path.join(tmpdir, "in.vcf"), "wt") as vcff:
                 for variant in args["variants"]:
+                    if variant.startswith("chr"):
+                        chrom_stripped = True
+                        variant = variant[3:]
                     print("%s\t%s\t.\t%s\t%s" % tuple(variant.split("-")), file=vcff)
             # Build command line to CADD.sh and execute.
             cmdline = [
@@ -61,12 +66,32 @@ def annotate_background_job(_self, bgjob_uuid):
                 raise
             # Check bash return code for validity, and raise exception if it is invalid.
             if return_code != 0:
+                print("[processed variants]")
+                for variant in args["variants"]:
+                    if args["genome_build"] == "GRCh38" and variant.startswith("chr"):
+                        variant = variant[3:]
+                    print("%s\t%s\t.\t%s\t%s" % tuple(variant.split("-")))
+                try:
+                    outs, errs = proc.communicate(timeout=15)
+                    print("[stdout]")
+                    print(outs.decode("utf-8"))
+                    print("[stderr]")
+                    print(errs.decode("utf-8"))
+                except subprocess.TimeoutExpired:
+                    proc.kill()
+                    outs, errs = proc.communicate()
+                    print("[stdout]")
+                    print(outs.decode("utf-8"))
+                    print("[stderr]")
+                    print(errs.decode("utf-8"))
                 # Write job status to database before raising.
                 bgjob.status = "failed"
-                bgjob.message = "Command line '{}' exited with error code {} and message: {}".format(
-                    " ".join(cmdline),
-                    return_code,
-                    " ".join(map(lambda x: x.decode(), proc.communicate())),
+                bgjob.message = (
+                    "Command line '{}' exited with error code {} and message: {}".format(
+                        " ".join(cmdline),
+                        return_code,
+                        " ".join(map(lambda x: x.decode(), proc.communicate())),
+                    )
                 )
                 bgjob.save()
                 raise subprocess.CalledProcessError(return_code, " ".join(cmdline))
@@ -83,6 +108,8 @@ def annotate_background_job(_self, bgjob_uuid):
                         header = row
                     elif header:
                         data = dict(zip(header, row))
+                        if chrom_stripped and not data["#Chrom"].startswith("chr"):
+                            data["#Chrom"] = f"chr{data['#Chrom']}"
                         key = "-".join((data[k] for k in ("#Chrom", "Pos", "Ref", "Alt")))
                         val = list(map(float, (data["RawScore"], data["PHRED"])))
                         scores[key] = val
