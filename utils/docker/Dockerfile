@@ -58,7 +58,7 @@ RUN ["/bin/bash","-c", "cd /tmp && \
         source /opt/miniconda3/bin/activate && \
         conda install -c conda-forge -y mamba && \
         mamba install -c conda-forge -c bioconda -y \
-            cadd-scripts==1.6.0 && \
+            cadd-scripts==1.6.post1 && \
         rm -f Mambaforge-Linux-x86_64.sh"]
 
 COPY --from=deps /usr/src/app/.venv /usr/src/app/.venv
