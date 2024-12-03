@@ -39,7 +39,7 @@ def annotate_background_job(_self, bgjob_uuid):
                 "bash",
                 "-xc",
                 (
-                    "{conda_activate}{cadd_sh} -a -g {genome_build} -v {cadd_release} "
+                    "{conda_activate}{cadd_sh} -m -a -g {genome_build} -v {cadd_release} "
                     "-o {tmpdir}/out.tsv.gz {tmpdir}/in.vcf"
                 ).format(
                     conda_activate=("source %s; " % CADD_CONDA) if CADD_CONDA else "",
