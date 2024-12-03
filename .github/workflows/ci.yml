@@ -9,13 +9,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Install Python via conda.
-        uses: s-weigand/setup-conda@v1
+        uses: conda-incubator/setup-miniconda@v3
         with:
-          conda-channels: defaults,bioconda,conda-forge
-      - name: Install mamba.
-        run: conda install -y mamba
+          miniforge-version: latest
       - name: Install the cadd-scripts package from bioconda
-        run: mamba install -y cadd-scripts
+        run: conda install -c bioconda -y cadd-scripts==1.6.1
 
       - name: Checkout repository
         uses: actions/checkout@v2
