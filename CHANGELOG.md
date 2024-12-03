@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.4.1](https://github.com/varfish-org/cadd-rest-api/compare/v0.4.0...v0.4.1) (2024-12-03)
+
+
+### Bug Fixes
+
+* use conda only in cadd scripts ([#18](https://github.com/varfish-org/cadd-rest-api/issues/18)) ([29308a9](https://github.com/varfish-org/cadd-rest-api/commit/29308a9d39b057a4b0ae67e7cba7051220e0d89b))
+
 ## [0.4.0](https://github.com/varfish-org/cadd-rest-api/compare/v0.3.4...v0.4.0) (2024-02-07)
 
 
